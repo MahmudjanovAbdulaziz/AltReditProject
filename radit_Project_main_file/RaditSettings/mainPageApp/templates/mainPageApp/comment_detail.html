@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+
+    #pollApp form {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column; /* Отображать элементы в столбце */
+    }
+
+    #pollApp form p {
+        margin-bottom: 10px;
+        color: #555;
+    }
+
+    #pollApp form label {
+        margin-bottom: 10px;
+        color: #555;
+    }
+
+    #pollApp form input, #pollApp form select {
+        width: 100%;
+        padding: 15px;
+        margin-bottom: 10px; /* Уменьшил отступ, чтобы выглядело компактнее */
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+        transition: border-color 0.3s ease;
+    }
+
+    #pollApp form input:focus, #pollApp form select:focus {
+        border-color: #333;
+    }
+
+    #pollApp form .add-comment {
+        background-color: #333;
+        color: #fff;
+        padding: 15px 25px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    #pollApp form .add-comment:hover {
+        background-color: #555;
+    }
+
+        #pollApp header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        #pollApp h1 {
+            margin: 0;
+        }
+
+        #pollApp main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+
+        #pollApp main:hover {
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+        }
+
+        #pollApp form {
+            margin-bottom: 20px;
+        }
+
+        #pollApp label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        #pollApp input, #pollApp select {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            transition: border-color 0.3s ease;
+        }
+
+        #pollApp input:focus, #pollApp select:focus {
+            border-color: #333;
+        }
+
+        #pollApp .add-comment {
+            background-color: #333;
+            color: #fff;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #pollApp .add-comment:hover {
+            background-color: #555;
+        }
+
+        .poll-container {
+            border: 1px solid #ddd;
+            padding: 25px;
+            margin-bottom: 25px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .poll-container h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .options-list li {
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .comment {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .comment-body {
+            margin-bottom: 10px;
+        }
+
+        .comment-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #555;
+        }
+
+        .comment-actions .add-comment {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            color: #555;
+            font-size: 16px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .comment-actions .add-comment:hover {
+            color: #333;
+        }
+
+        .comment-actions .date {
+            font-size: 14px;
+        }
+        /* Стили для кнопки "Лайк" */
+    .btn-like {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        color: #555;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-like:hover {
+        color: #333;
+    }
+
+    /* Стили для кнопки "Ответить" */
+    .btn-answer {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        color: #555;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-answer:hover {
+        color: #333;
+    }
+
+    </style>
+
+    <div class="main-main-container" id="pollApp">
+
+        
+        <main>
+            <form id="pollForm" method="post">
+                {% csrf_token %}
+                <p><strong>Пользователя:</strong> {{username}}</p>
+                <p><strong>Комментарий:</strong> {{ comment_detail.title }}</p>
+                <p><strong>Текст комментария:</strong> {{ comment_detail.text }}</p>
+                <label for="question">Ответить:</label>
+                <input type="text" id="question" name="question" required>    
+                <button class="add-comment" type="submit">Добавить опрос</button>
+            </form>
+            {% for comment in recent_comments %}
+            <div class="comment">
+                <div class="comment-body">
+                <p>{{comment.user.username}}</p>
+                    <p>{{ comment.text }}</p>
+                </div>
+                <div class="comment-actions">
+                    
+                    <form action="{% url 'mainPageApp:like' %}" method="post">
+                        {% csrf_token %}
+                    <input type="hidden" name="content_type" value="comment_detail_likes">
+                    <input type="hidden" name="object_id" value="{{ comment.id }}">
+                    <input type="hidden" name="like_value" value="1">
+                <button class="btn-like" title="Лайк"><i class="fas fa-thumbs-up"></i> {{ comment.like_count }}</button>
+                    </form>
+                    <div class="comment-actions">
+                        <button class="btn-answer" title="Ответить"><i class="fas fa-reply"></i> Ответить</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            
+        </main>
+    </div>
+
+
+
+
+
+
+{% endblock %}

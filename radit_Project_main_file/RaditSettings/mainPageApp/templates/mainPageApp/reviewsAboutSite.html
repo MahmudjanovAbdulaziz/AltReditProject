@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="comment-form">
+        <form action="{% url 'mainPageApp:reviewsAboutSite' %}" method="post">
+            {% csrf_token %}
+            <textarea id="messageInput" placeholder="Type your message" name="text"></textarea>
+            <button type="submit">Add Comment</button>
+        </form>
+        
+    </div>
+
+<div class="comments" id="comments">
+    {% for item in comments %}
+        <div class="comment">
+            <div class="user">{{ item.user.username }}</div>
+            <div class="message">{{ item.text }}</div>
+            <form action="{% url 'mainPageApp:like' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="content_type" value="reviews_about_site">
+                <input type="hidden" name="object_id" value="{{ item.id }}">
+                <input type="hidden" name="like_value" value="1">
+                <button type="submit" class="btn-like" title="Лайк">
+                    <img src="{% static 'images/thumb_up-btn.png' %}" alt="Лайк"> {{ item.like_count }}
+                </button>
+            </form>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

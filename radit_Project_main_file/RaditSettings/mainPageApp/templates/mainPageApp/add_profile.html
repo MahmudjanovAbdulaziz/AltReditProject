@@ -1,0 +1,64 @@
+
+
+
+<style>
+
+
+    h1 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    form {
+        max-width: 400px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 16px;
+        box-sizing: border-box;
+    }
+
+    button {
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    h1, p {
+        margin-top: 20px;
+    }
+</style>
+
+<form action="{% url 'mainPageApp:add_profile' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="avatar">Выберите аватар:</label>
+    <input type="file" name="avatar" accept="image/*">
+
+    <label for="first_name">Напишите свое имя:</label>
+    <input type="text" name="first_name">
+
+    <label for="last_name">Напишите свою фамилию:</label>
+    <input type="text" name="last_name">
+
+    <button type="submit">Загрузить</button>
+</form>
+

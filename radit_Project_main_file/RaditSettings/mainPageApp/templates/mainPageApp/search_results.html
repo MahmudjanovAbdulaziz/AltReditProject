@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Результаты поиска для "{{ search_query }}"</h1>
+
+
+ {% for result in search_result %}
+                <div class="col-md-12">
+                    <div class="web_hosting">
+                        <span><h1>{{ result.user.username }} </h1></span>
+                        <h2>{{ result.title }}</h2>
+                        <p><small>{{result.text}}</small></p>
+                        {% if result.post_slug %}
+                           <a class="discussion" href="{% url 'mainPageApp:comment_detail'  result.user.username result.post_slug %}">Обсудить</a>
+                        {% else %}
+                           <p>Нет доступного post_slug</p>
+                        {% endif %}
+                    {% if user.is_authenticated %}
+                     <form action="{% url 'mainPageApp:like' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="content_type" value="create_new_radit">
+                        <input type="hidden" name="object_id" value="{{ result.id }}">
+                        <input type="hidden" name="like_value" value="1">
+                        <button type="submit" class="btn-like" title="Лайк">
+                              <img src="{% static 'images/thumb_up-btn.png' %}" alt="Лайк"> {{ result.like_count }}
+                        </button>
+            
+                     </form>
+            
+                    {% else %}
+                     <button type="button" class="btn-like" title="Лайк" onclick="RedirectToLogin()">
+                        <img src="{% static 'images/thumb_up-btn.png' %}" alt="Лайк"> {{ result.like_count }}
+                     </button>
+            
+                    {% endif %}
+                    {% endfor %}
+                    </div>
+                </div>
+
+
+
+
+
+{% endblock %}
+
+
+
+
+
+

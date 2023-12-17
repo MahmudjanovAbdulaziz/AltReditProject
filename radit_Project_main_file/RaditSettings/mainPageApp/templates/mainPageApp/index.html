@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+      <!-- loader  -->
+
+      <style>
+             .btn-search {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        color: #555;
+        font-size: 16px;
+        display: inline-block;
+        
+    }
+
+    .btn-search:hover {
+        color: #333;
+    }
+      </style>
+
+      <div class="loader_bg">
+         <div class="loader"><img src="{% static 'images/loading.gif'%}" alt="#" /></div>
+      </div>
+
+      <section class="banner_main">
+         <div class="container">
+            <div class="row d_flex">
+               <div class="col-md-5">
+                  <div class="text-bg">
+                     <h1>Делись со<br> своими историями</h1>
+                     <p>Этот сайт cделан при поддержке gotovyuetemplates.com этот шаблон не является моей потомучто я беккенд. Деитесь собственными исторями, впечетлениями вместе с нами!!! </p>
+                     {% if user.is_authenticated %}
+                     <a  href="{% url 'mainPageApp:createNewRadit' %}">Начать</a>
+                     {% else %}
+                     <a href="{% url 'loginPage:loginView' %}">Начать</a>
+                     {% endif %}
+                     
+                  </div>
+               </div>
+               <div class="col-md-7">
+                  <div class="text-img">
+                     <figure><img src="{% static 'images/img.png' %}" /></figure>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+      <!-- end banner -->
+      <!-- Hosting -->
+
+
+
+<div id="" class="hosting">
+        <div class="container-interesting-blogs">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="titlepage">
+                        <h2>Интересные блоги</h2><br><br>
+                        <form action="{% url 'mainPageApp:search_results' %}" method="get">
+                           {% csrf_token %}
+                           <input type="text" name="search" placeholder="Что найти?">
+                           <button class="btn-search" type="submit"><i class="fas fa-search"></i></button>
+                        </form>
+                        </div>
+
+                     </div>
+            </div>
+
+            <div class="row-interesting-blogs">
+{% for item in comments %}
+    <div class="col-md-12">
+        <div class="web_hosting">
+            <span><h1>{{ item.user.username }} </h1></span>
+            <h2>{{ item.title }}</h2>
+            <p><small>{{item.text}}</small></p>
+            {% if item.post_slug %}
+               <a class="discussion" href="{% url 'mainPageApp:comment_detail'  item.user.username item.post_slug %}">Обсудить</a>
+            {% else %}
+               <p>Нет доступного post_slug</p>
+            {% endif %}
+      {% if user.is_authenticated %}
+         <form action="{% url 'mainPageApp:like' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="content_type" value="create_new_radit">
+            <input type="hidden" name="object_id" value="{{ item.id }}">
+            <input type="hidden" name="like_value" value="1">
+            <button type="submit" class="btn-like" title="Лайк">
+                  <img src="{% static 'images/thumb_up-btn.png' %}" alt="Лайк"> {{ item.like_count }}
+            </button>
+
+         </form>
+
+      {% else %}
+         <button type="button" class="btn-like" title="Лайк" onclick="RedirectToLogin()">
+            <img src="{% static 'images/thumb_up-btn.png' %}" alt="Лайк"> {{ item.like_count }}
+         </button>
+
+      {% endif %}
+
+
+
+           <p>Комментов под этим постом: {{ item.comment_detail_count }}</p>
+
+        </div>
+    </div>
+{% endfor %}
+
+
+
+
+
+
+
+
+
+
+<div class="pagination">
+    <span class="step-links">
+
+
+        {% for page_num in comments.paginator.page_range %}
+            {% if comments.number == page_num %}
+                <p href="#" class="page-number" style="color: black;">{{page_num}}</p>
+           {% elif page_num >= comments.number|add:-3 and page_num <= comments.number|add:3 %}
+               <a class="page-number" href="?page={{ page_num }}">{{ page_num }}</a>
+             
+            {% elif page_num == comments.paginator.page_range|slice:"-3:"|first %}
+                <span>...</span>
+            
+            {% endif %}
+        {% endfor %}
+
+
+    </span>
+</div>
+
+
+</div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+      <!-- end Hosting -->
+      <!-- Services  -->
+      <div id="service" class="Services">
+         <div class="container">
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="titlepage">
+                     <h2>Best Services</h2>
+                     <p>Lorem ipsum dolor sittem ametamngcing elit, per sed do eiusmoad <br>
+                        teimpor sittem elit inuning ut sed.
+                     </p>
+
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                  <div class="Services-box">
+                     <i><img src="{% static 'images/service1.png' %}" alt="#" /></i>
+                     <h3></h3>
+                     <p>Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci.</p>
+               <a class="read_more" href="#">Read More</a>
+
+                  </div>
+               </div>
+               <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                  <div class="Services-box">
+                     <i><img src="{% static 'images/service2.png' %}" alt="#" /></i>
+                     <h3>Dedicated Hosting</h3>
+                     <p>Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci.</p>
+               <a class="read_more" href="#">Read More</a>
+
+                  </div>
+               </div>
+               <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                  <div class="Services-box">
+                     <i><img src="{% static 'images/service3.png' %}" alt="#" /></i>
+                     <h3>Domain Registration</h3>
+                     <p>Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci.</p>
+               <a class="read_more" href="#">Read More</a>
+
+                  </div>
+               </div>
+               <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                  <div class="Services-box">
+                     <i><img src="{% static 'images/service4.png' %}" alt="#" /></i>
+                     <h3>VPS Hosting</h3>
+                     <p>Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci.</p>
+               <a class="read_more" href="#">Read More</a>
+
+                  </div>
+               </div>
+               <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                  <div class="Services-box">
+                     <i><img src="{% static 'images/service5.png' %}" alt="#" /></i>
+                     <h3>Cloud Hosting</h3>
+                     <p>Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci.</p>
+               <a class="read_more" href="#">Read More</a>
+
+                  </div>
+               </div>
+               <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                  <div class="Services-box">
+                     <i><img src="{% static 'images/service6.png' %}" alt="#" /></i>
+                     <h3>Reseller Hosting</h3>
+                     <p>Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci.</p>
+               <a class="read_more" href="#">Read More</a>
+
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- end Servicess -->
+      <!-- why -->
+      <div id="why" class="why">
+         <div class="container">
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="titlepage">
+                     <h2>Why you should choose </h2>
+                     <p>making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still </p>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                  <div id="box_ho" class="why-box">
+                     <i><img src="{% static 'images/why1.png' %}" alt="#" /></i>
+                     <h3>Отзывы о сайте</h3>
+                     <p>making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still </p>
+                  </div>
+                  <a class="read_more bg" href="{% url 'mainPageApp:reviewsAboutSite' %}">Read More</a>
+               </div>
+               <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                  <div class="why-box">
+                     <i><img src="{% static 'images/why2.png' %}" alt="#" /></i>
+                     <h3>Totaly Optimised</h3>
+                     <p>making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still </p>
+                  </div>
+                  <a class="read_more bg" href="#">Read More</a>
+               </div>
+               <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                  <div class="why-box">
+                     <i><img src="{% static 'images/why3.png' %}" alt="#" /></i>
+                     <h3>Worldwide Support</h3>
+                     <p>making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still </p>
+                  </div>
+                  <a class="read_more bg" href="#">Read More</a>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- end why -->
+      <!-- contact -->
+      <div id="contact" class="contact">
+         <div class="container">
+            <div class="row">
+               <div class="col-md-6 offset-md-3 ">
+                  <form class="main_form">
+                     <div class="row">
+                        <div class="col-sm-12">
+                           <input class="contactus" placeholder="Name" type="text" name="Name">
+                        </div>
+                        <div class="col-sm-12">
+                           <input class="contactus" placeholder="Email" type="text" name=" Email">
+                        </div>
+                        <div class="col-sm-12">
+                           <input class="contactus" placeholder="Phone" type="text" name="Phone">
+                        </div>
+                        <div class="col-sm-12">
+                           <textarea class="textarea" placeholder="Message" type="text" name="Message"></textarea>
+                        </div>
+                        <div class="col-sm-12">
+                           <button class="send">Send</button>
+                        </div>
+                     </div>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+
+
+      <script>
+        function RedirectToLogin(){
+           console.log('Redirecting to login...');
+           window.location.href = "{% url 'loginPage:loginView' %}";
+        }
+      </script>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+
+
+    .chat-container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 10px;
+    }
+
+    .chat-message {
+        background-color: #f2f2f2;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+
+    .chat-form-container {
+        max-width: 600px;
+        margin: 20px auto;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        margin-bottom: 8px;
+    }
+
+    input, textarea {
+        margin-bottom: 10px;
+        padding: 8px;
+    }
+
+    .btn-text-sub {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn-text-sub:hover {
+        background-color: #45a049;
+    }
+
+</style>
+
+<div class="chat-form-container">
+    <form method="post" onsubmit="return validateForm()">
+        {% csrf_token %}
+        <input type="text" id="topic" placeholder="Создайте тему для обсуждения. " name="title-topic-for-disscusion" >
+        <label for="topic">Прим: Однажды в лесу</label>
+        <textarea  cols="10" rows="5" placeholder="Текст для обсуждения" name="topic-for-disscusion" maxlength="250"></textarea>
+        <button class="btn-text-sub" type="submit">Отправить</button>
+    </form>
+
+<div class="chat-container">
+{% for item in comments %}
+    <h3>{{ item.user.username }}</р>
+    <h3> {{ item.title }}</h3>
+    <p><small>{{item.text}}</small></p>
+    <form action="{% url 'mainPageApp:like' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="content_type" value="create_new_radit">
+        <input type="hidden" name="object_id" value="{{ item.id }}">
+        <input type="hidden" name="like_value" value="1">
+        <button type="submit" class="btn-like" title="Лайк">
+            <img src="{% static 'images/thumb_up-btn.png' %}" alt="Лайк"> {{ item.like_count }}
+        </button><br>
+    </form>
+<form method="post" action="{% url 'mainPageApp:delete_comment' item.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="comment_id" value="{{ item.id }}">
+    <button class="btn-text-sub" type="submit" class="delete-comment">
+        <img src="{% static 'images/delete.png' %}" alt="Delete">
+    </button><br>
+</form>
+    <a class="btn-text-sub" href="{% url 'mainPageApp:comment_detail'  item.user.username item.post_slug %}">Обсудить</a><br><br>
+
+{% endfor %}
+</div>
+
+<script>
+        function validateForm() {
+            var topicInput = document.getElementsByName('topic-for-disscusion')[0];
+
+            if (topicInput.value.trim() === '') {
+                alert('Пожалуйста, заполните поле "Создайте тему для обсуждения".');
+                return false;  // Отменяем отправку формы
+            }
+
+            if (topicInput.value.replace(/[^a-zA-Zа-яА-Я]/g, '').length < 10) {
+                alert('Поле должно содержать не менее 10 букв.');
+                return false;  // Отменяем отправку формы
+            }
+
+            if (!/^[a-zA-Zа-яА-Я. ]+$/.test(topicInput.value)) {
+                alert('Поле может содержать только буквы, точки и пробелы.');
+                return false;  // Отменяем отправку формы
+            }
+
+
+            return true;  // Разрешаем отправку формы, если все проверки пройдены
+        }
+    </script>
+
+{% endblock %}
